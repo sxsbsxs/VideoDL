@@ -7,6 +7,8 @@ on:
     paths-ignore:
       - "android/**"
   pull_request:
+    paths-ignore:
+      - "android/**"
   workflow_dispatch:
 
 concurrency:
