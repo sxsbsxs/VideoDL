@@ -31,7 +31,7 @@ private fun describeDownloadError(error: Throwable): String {
     val raw = generateSequence(error) { it.cause }
         .mapNotNull { it.message?.trim()?.takeIf(String::isNotBlank) }
         .distinct()
-        .joinToString("\\n")
+        .joinToString("\n")
         .take(1200)
     val lower = raw.lowercase()
 
@@ -58,7 +58,7 @@ private fun describeDownloadError(error: Throwable): String {
             "网络连接失败或被当前网络环境拦截。请检查网络、代理和 DNS 后重试。"
         else -> "下载失败。请查看下面的 yt-dlp 错误详情。"
     }
-    return if (raw.isBlank()) hint else "$hint\\n\\n错误详情：$raw"
+    return if (raw.isBlank()) hint else "$hint\n\n错误详情：$raw"
 }
 
 class DownloadService : Service() {
