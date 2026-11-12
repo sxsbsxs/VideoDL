@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import yt_dlp
+from yt_dlp.version import __version__ as YTDLP_VERSION
 from yt_dlp.utils import DownloadError
 
 
@@ -41,7 +42,7 @@ def _base_options(cookie_path: str | None = None) -> dict[str, Any]:
 
 
 def engine_version() -> str:
-    return yt_dlp.version.__version__
+    return YTDLP_VERSION
 
 
 def analyze(url: str, cookie_path: str = "") -> str:
