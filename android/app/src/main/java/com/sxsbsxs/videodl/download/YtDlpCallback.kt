@@ -3,7 +3,8 @@ package com.sxsbsxs.videodl.download
 import org.json.JSONObject
 
 class YtDlpCallback(
-    private val isCancelled: () -> Boolean
+    private val isCancelled: () -> Boolean,
+    private val onProgressUpdate: (Int, String, String, String) -> Unit = { _, _, _, _ -> }
 ) {
     @Volatile
     private var cancelled = false
@@ -17,7 +18,9 @@ class YtDlpCallback(
     fun onProgress(payload: String) {
         val data = runCatching { JSONObject(payload) }.getOrNull() ?: return
         val status = data.optString("status")
-        val percent = data.optDouble("percent", 0.0).toInt().coerceIn(0, 100)
+        val percent = if (status == "finished") 100 else {
+            data.optDouble("percent", 0.0).toInt().coerceIn(0, 100)
+        }
         val speed = formatRate(data.optDouble("speed", 0.0))
         val etaSeconds = data.optInt("eta", -1)
         val eta = if (etaSeconds >= 0) formatEta(etaSeconds) else "—"
@@ -29,6 +32,7 @@ class YtDlpCallback(
             else -> "正在连接"
         }
         DownloadState.updateProgress(percent, speed, eta, message)
+        onProgressUpdate(percent, speed, eta, message)
     }
 
     private fun formatRate(value: Double): String {
