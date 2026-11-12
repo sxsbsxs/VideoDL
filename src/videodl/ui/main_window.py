@@ -492,6 +492,9 @@ class MainWindow(QMainWindow):
         self.download_worker = None
         self.active_task = None
         self.cancel_button.setEnabled(False)
+        if self._close_pending:
+            self.close()
+            return
         self._start_next_task()
 
     def cancel_current(self) -> None:
