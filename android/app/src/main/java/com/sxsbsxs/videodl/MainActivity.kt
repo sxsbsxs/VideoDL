@@ -9,6 +9,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import com.chaquo.python.AndroidPlatform
 import com.chaquo.python.Python
@@ -19,8 +22,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var cookiePicker: ActivityResultLauncher<Array<String>>
     private lateinit var notificationPermission: ActivityResultLauncher<String>
 
-    private var cookieFilePath: String = ""
-    private var cookieFileName: String = ""
+    private var cookieFilePath by mutableStateOf("")
+    private var cookieFileName by mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,10 @@ class MainActivity : ComponentActivity() {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
+
+        val preferences = getSharedPreferences("videodl_android", MODE_PRIVATE)
+        cookieFilePath = preferences.getString("cookie_path", "").orEmpty()
+        cookieFileName = preferences.getString("cookie_name", "").orEmpty()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
@@ -63,24 +70,18 @@ class MainActivity : ComponentActivity() {
                 cookieFilePath = destination.absolutePath
                 cookieFileName = uri.lastPathSegment?.substringAfterLast('/')?.take(48)
                     ?: "cookies.txt"
+                getSharedPreferences("videodl_android", MODE_PRIVATE).edit()
+                    .putString("cookie_path", cookieFilePath)
+                    .putString("cookie_name", cookieFileName)
+                    .apply()
             } ?: error("无法读取选择的文件")
         }.onFailure {
             cookieFilePath = ""
             cookieFileName = ""
-        }
-        recreateContent()
-    }
-
-    private fun recreateContent() {
-        // Recompose the current screen with the newly imported private cookie path.
-        setContent {
-            VideoDLScreen(
-                cookieFileName = cookieFileName,
-                cookieFilePath = cookieFilePath,
-                onChooseCookies = {
-                    cookiePicker.launch(arrayOf("text/plain", "application/octet-stream", "*/*"))
-                }
-            )
+            getSharedPreferences("videodl_android", MODE_PRIVATE).edit()
+                .remove("cookie_path")
+                .remove("cookie_name")
+                .apply()
         }
     }
 }
