@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.IBinder
+import android.os.PowerManager
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
@@ -33,6 +34,7 @@ class DownloadService : Service() {
     private var cancelRequested = false
 
     private var callback: YtDlpCallback? = null
+    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -65,6 +67,7 @@ class DownloadService : Service() {
                 outputDir.mkdirs()
                 DownloadState.reset(title.ifBlank { url })
                 startForeground(NOTIFICATION_ID, buildNotification("正在准备下载", 0))
+                acquireWakeLock()
                 callback = YtDlpCallback(
                     isCancelled = { cancelRequested },
                     onProgressUpdate = { percent, speed, eta, message ->
@@ -81,6 +84,7 @@ class DownloadService : Service() {
                         cookiePath = cookiePath
                     )
                     stopForeground(STOP_FOREGROUND_DETACH)
+                    releaseWakeLock()
                     stopSelf(startId)
                 }
             }
@@ -171,6 +175,25 @@ class DownloadService : Service() {
         }
     }
 
+    private fun acquireWakeLock() {
+        if (wakeLock?.isHeld == true) return
+        val powerManager = getSystemService(PowerManager::class.java)
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "VideoDL:Download"
+        ).apply {
+            setReferenceCounted(false)
+            acquire()
+        }
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.let { lock ->
+            if (lock.isHeld) lock.release()
+        }
+        wakeLock = null
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -226,6 +249,7 @@ class DownloadService : Service() {
     override fun onDestroy() {
         cancelRequested = true
         callback?.cancel()
+        releaseWakeLock()
         serviceScope.cancel()
         super.onDestroy()
     }
