@@ -153,7 +153,7 @@ class MainWindow(QMainWindow):
 
         options_layout.addWidget(self._label("Content type", "Muted"))
         self.media_combo = QComboBox()
-        self.media_combo.addItem("Video (MP4)", "video")
+        self.media_combo.addItem("Video (best available format)", "video")
         self.media_combo.addItem("Audio only (MP3)", "audio")
         options_layout.addWidget(self.media_combo)
 
