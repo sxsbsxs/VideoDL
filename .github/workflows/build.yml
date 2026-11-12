@@ -44,8 +44,8 @@ jobs:
           - os: ubuntu-22.04
             label: Linux x64
             artifact: VideoDL-linux-x64
-          - os: macos-14
-            label: macOS Apple Silicon
+          - os: macos-26
+            label: macOS 26 Apple Silicon
             artifact: VideoDL-macos-arm64
     runs-on: \${{ matrix.os }}
     steps:
