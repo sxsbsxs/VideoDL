@@ -68,6 +68,7 @@ jobs:
           --windowed
           --name VideoDL
           --collect-all yt_dlp
+          --collect-all yt_dlp_ejs
           --collect-all PySide6
           src/videodl/__main__.py
       - name: Package Windows archive
