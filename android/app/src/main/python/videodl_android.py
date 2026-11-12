@@ -117,7 +117,7 @@ class _YtDlpLogger:
             self._messages = self._messages[-8:]
 
     def tail(self) -> str:
-        return "\\n".join(self._messages)
+        return "\n".join(self._messages)
 
 
 def download(
@@ -187,7 +187,7 @@ def download(
         detail = f"{type(exc).__name__}: {exc}"
         log_tail = logger.tail()
         if log_tail:
-            detail += "\\n\\nyt-dlp 日志：\\n" + log_tail
+            detail += "\n\nyt-dlp 日志：\n" + log_tail
         raise RuntimeError(detail) from exc
 
     created = []
