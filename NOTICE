@@ -12,8 +12,8 @@ software used by VideoDL.
   Source: https://github.com/yt-dlp/yt-dlp
 - yt-dlp-ejs: companion JavaScript challenge scripts. Its package metadata
   declares Unlicense AND MIT AND ISC. Source: https://github.com/yt-dlp/ejs
-- PySide6 / Qt for Python: available under license terms stated by Qt,
-  including LGPL-3.0-only and GPL alternatives.
+- PySide6 Essentials / Qt for Python: available under license terms stated
+  by Qt, including LGPL-3.0-only and GPL alternatives.
   Source: https://code.qt.io/cgit/pyside/pyside-setup.git/
 - FFmpeg: not bundled by this project. Users may install a separate FFmpeg
   distribution. FFmpeg licensing depends on the exact build configuration
