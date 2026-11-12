@@ -250,5 +250,12 @@ class DownloadService : Service() {
             }
             ContextCompat.startForegroundService(context, intent)
         }
+
+        fun cancel(context: Context) {
+            val intent = Intent(context, DownloadService::class.java).apply {
+                action = ACTION_CANCEL
+            }
+            context.startService(intent)
+        }
     }
 }
