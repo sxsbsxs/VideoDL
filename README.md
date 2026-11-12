@@ -7,6 +7,7 @@ VideoDL is an open-source desktop video and audio downloader built with Python, 
 ## Features
 
 - Desktop application for Windows, Linux and macOS
+- Android application built with Kotlin, Jetpack Compose and embedded Python/yt-dlp
 - yt-dlp Python API as the actual extraction and download engine
 - Video metadata and thumbnail preview
 - Quality presets, including best available, 4K, 1440p, 1080p, 720p and lower
