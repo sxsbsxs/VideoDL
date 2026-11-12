@@ -6,7 +6,7 @@ from the MIT license covering the original VideoDL source code.
 | Component | Purpose | License / source |
 |---|---|---|
 | yt-dlp | Extraction and download engine | Unlicense; https://github.com/yt-dlp/yt-dlp |
-| yt-dlp-ejs | YouTube JavaScript challenge scripts | Unlicense; https://github.com/yt-dlp/ejs |
+| yt-dlp-ejs | YouTube JavaScript challenge scripts | Unlicense AND MIT AND ISC; https://github.com/yt-dlp/ejs |
 | PySide6 / Qt for Python | Desktop UI toolkit | LGPL-3.0-only or GPL alternatives; https://wiki.qt.io/Qt_for_Python |
 | FFmpeg | Optional media merging and audio conversion | Not bundled; license depends on the user's distribution/build; https://ffmpeg.org/ |
 
