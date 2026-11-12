@@ -9,6 +9,7 @@ from typing import Callable
 
 import yt_dlp
 from yt_dlp.utils import DownloadError
+from yt_dlp.version import __version__ as YTDLP_VERSION
 
 
 ProgressCallback = Callable[[dict], None]
@@ -20,7 +21,7 @@ class YtDlpService:
 
     @staticmethod
     def version() -> str:
-        return getattr(yt_dlp.version, "__version__", "unknown")
+        return YTDLP_VERSION
 
     @staticmethod
     def ffmpeg_available(location: str = "") -> bool:
