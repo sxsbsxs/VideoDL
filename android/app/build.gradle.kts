@@ -48,6 +48,7 @@ android {
 chaquopy {
     defaultConfig {
         version = "3.11"
+        buildPython("python3.11")
         pip {
             install("yt-dlp==2026.10.26")
             install("yt-dlp-ejs==0.8.0")
@@ -56,11 +57,11 @@ chaquopy {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.18.0")
-    implementation("androidx.activity:activity-compose:1.13.0")
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.activity:activity-compose:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
+    val composeBom = platform("androidx.compose:compose-bom:2025.10.00")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
