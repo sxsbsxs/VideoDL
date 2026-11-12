@@ -25,6 +25,7 @@ Open the GitHub Actions or Releases page:
 
 - Releases: https://github.com/sxsbsxs/VideoDL/releases
 - Actions: https://github.com/sxsbsxs/VideoDL/actions
+- Android build guide: https://github.com/sxsbsxs/VideoDL/blob/main/android/README.md
 
 Tagged releases publish platform-specific archives. Builds are not signed/notarized yet, so Windows SmartScreen or macOS Gatekeeper may show an unknown-developer warning. FFmpeg and Deno are external runtimes and are not included in the current packages; install them separately and make their executables available on PATH.
 
