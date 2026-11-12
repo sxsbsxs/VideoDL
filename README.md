@@ -30,10 +30,11 @@ Tagged releases publish platform-specific archives. Builds are not signed/notari
 ## Requirements for running from source
 
 - Python 3.11 or newer
+- Deno 2.3 or newer is recommended for full YouTube support. Install Deno and make sure the deno executable is available on PATH.
 - FFmpeg and ffprobe are strongly recommended. They are needed for merging separate video/audio streams and for MP3 conversion.
 - A network connection and a supported website
 
-yt-dlp supports many sites, but individual sites can change without notice. Site support and available formats depend on the website, account permissions, region, and the installed yt-dlp version.
+yt-dlp supports many sites, but individual sites can change without notice. Site support and available formats depend on the website, account permissions, region, and the installed yt-dlp version. The yt-dlp[default] dependency group includes the companion EJS challenge-solver scripts; YouTube full support also requires a supported JavaScript runtime. Deno is enabled by default by yt-dlp.
 
 ## Run from source
 
