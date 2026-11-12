@@ -11,7 +11,7 @@ VideoDL is an open-source desktop video and audio downloader built with Python, 
 - Video metadata and thumbnail preview
 - Quality presets, including best available, 4K, 1440p, 1080p, 720p and lower
 - Video downloads and MP3 audio extraction
-- Playlist and batch URLs supported by yt-dlp
+- Playlist URLs supported; each queue task represents one entered URL
 - Sequential download queue with live progress, speed and ETA
 - Cookie-file support for sites that require an authenticated session
 - User-selectable download directory
@@ -25,7 +25,7 @@ Open the GitHub Actions or Releases page:
 - Releases: https://github.com/sxsbsxs/VideoDL/releases
 - Actions: https://github.com/sxsbsxs/VideoDL/actions
 
-Tagged releases publish platform-specific archives. Builds are not signed/notarized yet, so Windows SmartScreen or macOS Gatekeeper may show an unknown-developer warning.
+Tagged releases publish platform-specific archives. Builds are not signed/notarized yet, so Windows SmartScreen or macOS Gatekeeper may show an unknown-developer warning. FFmpeg and Deno are external runtimes and are not included in the current packages; install them separately and make their executables available on PATH.
 
 ## Requirements for running from source
 
@@ -78,7 +78,7 @@ Do not share cookies, session tokens, or account credentials. Respect each websi
 ## Build locally
 
     python -m pip install -e ".[build]"
-    python -m PyInstaller --noconfirm --clean --windowed --name VideoDL --collect-all yt_dlp --collect-all PySide6 src/videodl/__main__.py
+    python -m PyInstaller --noconfirm --clean --windowed --name VideoDL --collect-all yt_dlp --collect-all yt_dlp_ejs --collect-all PySide6 src/videodl/__main__.py
 
 The output is written to the dist directory. FFmpeg is not bundled.
 
