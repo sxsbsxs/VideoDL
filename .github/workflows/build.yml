@@ -29,6 +29,8 @@ jobs:
       - name: Compile source
         run: python -m compileall -q src
       - name: Run unit tests
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: python -m pytest -q
 
   build:
