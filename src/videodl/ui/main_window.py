@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import shutil
 
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QPixmap
@@ -57,6 +58,7 @@ class MainWindow(QMainWindow):
         self.download_worker: DownloadWorker | None = None
         self.active_task: dict | None = None
         self.pending_tasks: list[dict] = []
+        self._close_pending = False
         self.network = QNetworkAccessManager(self)
 
         self._build_ui()
@@ -248,7 +250,11 @@ class MainWindow(QMainWindow):
     def _update_engine_status(self) -> None:
         version = YtDlpService.version()
         ffmpeg_ok = YtDlpService.ffmpeg_available(self.ffmpeg_input.text().strip())
-        self.engine_label.setText(f"yt-dlp {version}  •  FFmpeg {'ready' if ffmpeg_ok else 'not found'}")
+        deno_ok = shutil.which("deno") is not None
+        self.engine_label.setText(
+            f"yt-dlp {version}  •  FFmpeg {'ready' if ffmpeg_ok else 'not found'}"
+            f"  •  Deno {'ready' if deno_ok else 'not found'}"
+        )
 
     def choose_output_dir(self) -> None:
         current = self.output_input.text().strip() or str(Path.home())
@@ -495,20 +501,39 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage("Cancellation requested…")
 
     def closeEvent(self, event) -> None:
-        if self.download_worker and self.download_worker.isRunning():
-            answer = QMessageBox.question(
-                self,
-                "Download in progress",
-                "A download is still running. Cancel it and close VideoDL?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No,
-            )
-            if answer != QMessageBox.StandardButton.Yes:
-                event.ignore()
-                return
-            self.download_worker.requestInterruption()
-            self.download_worker.wait(2500)
-        if self.info_worker and self.info_worker.isRunning():
-            self.info_worker.requestInterruption()
-            self.info_worker.wait(1000)
+        running_workers = [
+            worker
+            for worker in (self.download_worker, self.info_worker)
+            if worker is not None and worker.isRunning()
+        ]
+        if running_workers:
+            if self.download_worker and self.download_worker.isRunning() and not self._close_pending:
+                answer = QMessageBox.question(
+                    self,
+                    "Download in progress",
+                    "A download is still running. Cancel it and close VideoDL?",
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No,
+                )
+                if answer != QMessageBox.StandardButton.Yes:
+                    event.ignore()
+                    return
+
+            self._close_pending = True
+            for worker in running_workers:
+                worker.requestInterruption()
+                try:
+                    worker.finished.disconnect(self._finish_pending_close)
+                except RuntimeError:
+                    pass
+                worker.finished.connect(self._finish_pending_close)
+            self.statusBar().showMessage("Waiting for active tasks to stop safely…")
+            event.ignore()
+            return
+
+        self._save_settings()
         event.accept()
+
+    def _finish_pending_close(self) -> None:
+        if self._close_pending:
+            self.close()
