@@ -328,9 +328,7 @@ class MainWindow(QMainWindow):
         self.quality_combo.clear()
         self.quality_combo.addItem("Best available", "bv*+ba/best")
         for label, selector in QUALITY_PRESETS[1:]:
-            limit = int("".join(character for character in label if character.isdigit()) or "0")
-            if max_height == 0 or max_height >= limit:
-                self.quality_combo.addItem(label, selector)
+            self.quality_combo.addItem(label, selector)
 
         thumbnail = info.get("thumbnail")
         if thumbnail:
