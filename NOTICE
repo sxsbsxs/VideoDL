@@ -18,6 +18,12 @@ software used by VideoDL.
 - FFmpeg: not bundled by this project. Users may install a separate FFmpeg
   distribution. FFmpeg licensing depends on the exact build configuration
   and enabled components. Source: https://ffmpeg.org/
+- Chaquopy: used by the Android edition to embed Python. Current versions are
+  free and open-source under the MIT license. Source: https://chaquo.com/chaquopy/license/
+- AndroidX / Jetpack Compose: Android libraries distributed under Apache-2.0.
+  Source: https://developer.android.com/jetpack/androidx
+- Coil: Android image loading library distributed under Apache-2.0.
+  Source: https://github.com/coil-kt/coil
 
 When redistributing a packaged application, review the exact versions,
 binary notices, and license obligations of all included dependencies.
