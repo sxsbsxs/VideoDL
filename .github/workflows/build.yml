@@ -32,7 +32,7 @@ jobs:
         run: python -m pytest -q
 
   build:
-    name: Build \${{ matrix.label }}
+    name: Build ${{ matrix.label }}
     needs: test
     strategy:
       fail-fast: false
@@ -47,7 +47,7 @@ jobs:
           - os: macos-26
             label: macOS 26 Apple Silicon
             artifact: VideoDL-macos-arm64
-    runs-on: \${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -83,7 +83,7 @@ jobs:
       - name: Upload platform package
         uses: actions/upload-artifact@v4
         with:
-          name: \${{ matrix.artifact }}
+          name: ${{ matrix.artifact }}
           path: VideoDL-*
           if-no-files-found: error
           retention-days: 14
