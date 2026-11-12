@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "videodl"
+version = "0.1.0"
+description = "A cross-platform desktop downloader powered by yt-dlp"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "VideoDL contributors" }]
+keywords = ["video", "downloader", "yt-dlp", "desktop", "pyside6"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: X11 Applications :: Qt",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Multimedia :: Video",
+]
+dependencies = [
+  "PySide6>=6.7",
+  "yt-dlp>=2025.10.22",
+  "platformdirs>=4.2",
+]
+
+[project.optional-dependencies]
+build = ["pyinstaller>=6.10"]
+test = ["pytest>=8.0"]
+
+[project.scripts]
+videodl = "videodl.app:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
