@@ -1,0 +1,21 @@
+VideoDL third-party notices
+===========================
+
+VideoDL is an independent application and is not affiliated with the yt-dlp,
+Qt, or FFmpeg projects.
+
+The original VideoDL source code is licensed under the MIT License in LICENSE.
+That license does not replace, modify, or override the licenses of third-party
+software used by VideoDL.
+
+- yt-dlp: a separate project distributed under the Unlicense.
+  Source: https://github.com/yt-dlp/yt-dlp
+- PySide6 / Qt for Python: available under license terms stated by Qt,
+  including LGPL-3.0-only and GPL alternatives.
+  Source: https://code.qt.io/cgit/pyside/pyside-setup.git/
+- FFmpeg: not bundled by this project. Users may install a separate FFmpeg
+  distribution. FFmpeg licensing depends on the exact build configuration
+  and enabled components. Source: https://ffmpeg.org/
+
+When redistributing a packaged application, review the exact versions,
+binary notices, and license obligations of all included dependencies.
