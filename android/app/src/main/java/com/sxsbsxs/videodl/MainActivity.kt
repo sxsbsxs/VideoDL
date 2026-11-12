@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
-import com.chaquo.python.AndroidPlatform
+import com.chaquo.python.android.AndroidPlatform
 import com.chaquo.python.Python
 import com.sxsbsxs.videodl.ui.VideoDLScreen
 import java.io.File
