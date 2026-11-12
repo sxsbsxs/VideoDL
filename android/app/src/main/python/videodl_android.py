@@ -94,6 +94,32 @@ def analyze(url: str, cookie_path: str = "") -> str:
     return json.dumps(payload, ensure_ascii=False)
 
 
+class _YtDlpLogger:
+    """Keep actionable yt-dlp warnings/errors for the Android UI."""
+
+    def __init__(self) -> None:
+        self._messages: list[str] = []
+
+    def debug(self, message: str) -> None:
+        # yt-dlp also sends routine progress/debug chatter here; keep this quiet.
+        return
+
+    def warning(self, message: str) -> None:
+        self._append("警告", message)
+
+    def error(self, message: str) -> None:
+        self._append("错误", message)
+
+    def _append(self, level: str, message: Any) -> None:
+        value = str(message).strip()
+        if value:
+            self._messages.append(f"{level}：{value}")
+            self._messages = self._messages[-8:]
+
+    def tail(self) -> str:
+        return "\\n".join(self._messages)
+
+
 def download(
     url: str,
     output_dir: str,
@@ -149,10 +175,20 @@ def download(
     options["progress_hooks"] = [report]
     options["postprocessor_hooks"] = [report]
 
-    with yt_dlp.YoutubeDL(options) as downloader:
-        result = downloader.download([url])
-        if result:
-            raise DownloadError(f"yt-dlp 返回错误代码：{result}")
+    logger = _YtDlpLogger()
+    options["logger"] = logger
+
+    try:
+        with yt_dlp.YoutubeDL(options) as downloader:
+            result = downloader.download([url])
+            if result:
+                raise DownloadError(f"yt-dlp 返回错误代码：{result}")
+    except Exception as exc:
+        detail = f"{type(exc).__name__}: {exc}"
+        log_tail = logger.tail()
+        if log_tail:
+            detail += "\\n\\nyt-dlp 日志：\\n" + log_tail
+        raise RuntimeError(detail) from exc
 
     created = []
     for item in destination.iterdir():
