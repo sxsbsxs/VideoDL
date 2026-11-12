@@ -65,7 +65,12 @@ class DownloadService : Service() {
                 outputDir.mkdirs()
                 DownloadState.reset(title.ifBlank { url })
                 startForeground(NOTIFICATION_ID, buildNotification("正在准备下载", 0))
-                callback = YtDlpCallback { cancelRequested }
+                callback = YtDlpCallback(
+                    isCancelled = { cancelRequested },
+                    onProgressUpdate = { percent, speed, eta, message ->
+                        updateNotification("$message  •  $speed  •  $eta", percent)
+                    }
+                )
 
                 serviceScope.launch {
                     runDownload(
@@ -75,7 +80,7 @@ class DownloadService : Service() {
                         audioOnly = audioOnly,
                         cookiePath = cookiePath
                     )
-                    stopForeground(STOP_FOREGROUND_REMOVE)
+                    stopForeground(STOP_FOREGROUND_DETACH)
                     stopSelf(startId)
                 }
             }
@@ -93,7 +98,7 @@ class DownloadService : Service() {
         try {
             val python = Python.getInstance()
             val module = python.getModule("videodl_android")
-            val activeCallback = callback ?: YtDlpCallback { cancelRequested }
+            val activeCallback = callback ?: YtDlpCallback(isCancelled = { cancelRequested })
             val json = module.callAttr(
                 "download",
                 url,
@@ -106,6 +111,7 @@ class DownloadService : Service() {
 
             if (cancelRequested) {
                 DownloadState.cancelled()
+                updateNotification("下载已取消", DownloadState.state.value.progress, finished = true)
                 return
             }
 
@@ -126,6 +132,7 @@ class DownloadService : Service() {
         } catch (error: Throwable) {
             if (error is CancellationException || cancelRequested) {
                 DownloadState.cancelled()
+                updateNotification("下载已取消", DownloadState.state.value.progress, finished = true)
             } else {
                 val message = error.message?.lineSequence()?.firstOrNull().orEmpty()
                 DownloadState.fail(message.ifBlank { "下载失败，请检查链接或网络。" })
@@ -217,6 +224,8 @@ class DownloadService : Service() {
     }
 
     override fun onDestroy() {
+        cancelRequested = true
+        callback?.cancel()
         serviceScope.cancel()
         super.onDestroy()
     }
