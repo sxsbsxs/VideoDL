@@ -10,8 +10,8 @@ software used by VideoDL.
 
 - yt-dlp: a separate project distributed under the Unlicense.
   Source: https://github.com/yt-dlp/yt-dlp
-- yt-dlp-ejs: companion JavaScript challenge scripts, also distributed under
-  the Unlicense. Source: https://github.com/yt-dlp/ejs
+- yt-dlp-ejs: companion JavaScript challenge scripts. Its package metadata
+  declares Unlicense AND MIT AND ISC. Source: https://github.com/yt-dlp/ejs
 - PySide6 / Qt for Python: available under license terms stated by Qt,
   including LGPL-3.0-only and GPL alternatives.
   Source: https://code.qt.io/cgit/pyside/pyside-setup.git/
