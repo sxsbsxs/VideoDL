@@ -29,6 +29,10 @@ Open the GitHub Actions or Releases page:
 
 Tagged releases publish platform-specific archives. Builds are not signed/notarized yet, so Windows SmartScreen or macOS Gatekeeper may show an unknown-developer warning. FFmpeg and Deno are external runtimes and are not included in the current packages; install them separately and make their executables available on PATH.
 
+## Android
+
+The Android project is in the `android/` directory. It embeds Python and the official yt-dlp package with Chaquopy; its APK is built by the separate Android GitHub Actions workflow. See [Android build instructions](android/README.md). The Android alpha currently uses single-file formats (FFmpeg is not bundled) and does not bundle a JavaScript runtime for YouTube challenge solving.
+
 ## Requirements for running from source
 
 - Python 3.11 or newer
