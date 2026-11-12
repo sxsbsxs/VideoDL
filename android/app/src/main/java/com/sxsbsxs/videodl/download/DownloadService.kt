@@ -27,6 +27,40 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 
+private fun describeDownloadError(error: Throwable): String {
+    val raw = generateSequence(error) { it.cause }
+        .mapNotNull { it.message?.trim()?.takeIf(String::isNotBlank) }
+        .distinct()
+        .joinToString("\\n")
+        .take(1200)
+    val lower = raw.lowercase()
+
+    val hint = when {
+        "no supported javascript runtime" in lower ||
+            "javascript challenge" in lower ||
+            "challenge solving failed" in lower ->
+            "该网站（常见于 YouTube）需要 JavaScript 运行环境；当前 Android 版尚未内置该运行环境。"
+        "requested format is not available" in lower ||
+            "requested format not available" in lower ->
+            "当前清晰度没有可用的单文件格式。请重新解析后改选较低清晰度或“最佳单文件”。"
+        "http error 403" in lower || "status code 403" in lower ->
+            "网站拒绝了媒体请求（HTTP 403）。请重新解析；需要登录的网站请导入有效 Cookie。"
+        "http error 429" in lower || "too many requests" in lower ->
+            "请求过于频繁（HTTP 429）。请稍后再试。"
+        "sign in" in lower || "login required" in lower || "private video" in lower ->
+            "该视频需要登录或没有公开访问权限。请确认账号有权访问，并导入有效 Cookie。"
+        "unsupported url" in lower ->
+            "当前链接格式或网站暂不受 yt-dlp 支持。"
+        "ffmpeg" in lower ->
+            "该视频可能需要合并独立的视频流和音频流；当前 Android 版尚未内置 FFmpeg。"
+        "timed out" in lower || "timeout" in lower || "ssl" in lower ||
+            "certificate" in lower || "urlopen error" in lower ->
+            "网络连接失败或被当前网络环境拦截。请检查网络、代理和 DNS 后重试。"
+        else -> "下载失败。请查看下面的 yt-dlp 错误详情。"
+    }
+    return if (raw.isBlank()) hint else "$hint\\n\\n错误详情：$raw"
+}
+
 class DownloadService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -138,9 +172,8 @@ class DownloadService : Service() {
                 DownloadState.cancelled()
                 updateNotification("下载已取消", DownloadState.state.value.progress, finished = true)
             } else {
-                val message = error.message?.lineSequence()?.firstOrNull().orEmpty()
-                DownloadState.fail(message.ifBlank { "下载失败，请检查链接或网络。" })
-                updateNotification("下载失败", 0, finished = true)
+                DownloadState.fail(describeDownloadError(error))
+                updateNotification("下载失败，打开 VideoDL 查看详情", 0, finished = true)
             }
         }
     }
